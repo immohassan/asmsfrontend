@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Alex Thompson",
+    "email": "alex.thompson@student.akademi.edu",
+    "studentId": "STU2024001",
+    "grade": "Grade 10",
+    "section": "A",
+    "rollNumber": "101",
+    "phone": "+1 (555) 111-2233",
+    "parentPhone": "+1 (555) 111-2234",
+    "address": "123 Main St, City, State 12345",
+    "dateOfBirth": "2009-03-15",
+    "status": "Active",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+  },
+  {
+    "id": 2,
+    "name": "Emma Wilson",
+    "email": "emma.wilson@student.akademi.edu",
+    "studentId": "STU2024002",
+    "grade": "Grade 10",
+    "section": "A",
+    "rollNumber": "102",
+    "phone": "+1 (555) 222-3344",
+    "parentPhone": "+1 (555) 222-3345",
+    "address": "456 Oak Ave, City, State 12345",
+    "dateOfBirth": "2009-07-22",
+    "status": "Active",
+    "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "studentId": 1,
+    "studentName": "Alex Thompson",
+    "subject": "Mathematics",
+    "assessment": "Mid-term Exam",
+    "grade": "A",
+    "score": 92,
+    "maxScore": 100,
+    "date": "2024-10-15",
+    "teacher": "Dr. Sarah Johnson"
+  },
+  {
+    "id": 2,
+    "studentId": 1,
+    "studentName": "Alex Thompson",
+    "subject": "Physics",
+    "assessment": "Lab Report",
+    "grade": "B+",
+    "score": 87,
+    "maxScore": 100,
+    "date": "2024-10-12",
+    "teacher": "Prof. Michael Chen"
+  },
+  {
+    "id": 3,
+    "studentId": 1,
+    "studentName": "Alex Thompson",
+    "subject": "English Literature",
+    "assessment": "Essay Assignment",
+    "grade": "A-",
+    "score": 90,
+    "maxScore": 100,
+    "date": "2024-10-10",
+    "teacher": "Ms. Emily Rodriguez"
+  }
+]

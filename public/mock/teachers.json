@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Dr. Sarah Johnson",
+    "email": "sarah.johnson@akademi.edu",
+    "phone": "+1 (555) 123-4567",
+    "subject": "Mathematics",
+    "department": "Science",
+    "employeeId": "EMP001",
+    "joinDate": "2020-08-15",
+    "status": "Active",
+    "avatar": "https://images.unsplash.com/photo-1494790108755-2616b612b1fc?w=150&h=150&fit=crop&crop=face"
+  },
+  {
+    "id": 2,
+    "name": "Prof. Michael Chen",
+    "email": "michael.chen@akademi.edu",
+    "phone": "+1 (555) 234-5678",
+    "subject": "Physics",
+    "department": "Science",
+    "employeeId": "EMP002",
+    "joinDate": "2019-09-01",
+    "status": "Active",
+    "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+  },
+  {
+    "id": 3,
+    "name": "Ms. Emily Rodriguez",
+    "email": "emily.rodriguez@akademi.edu",
+    "phone": "+1 (555) 345-6789",
+    "subject": "English Literature",
+    "department": "Humanities",
+    "employeeId": "EMP003",
+    "joinDate": "2021-01-10",
+    "status": "Active",
+    "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face"
+  }
+]
