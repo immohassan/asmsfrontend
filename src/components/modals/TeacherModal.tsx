@@ -18,16 +18,28 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+interface Role {
+  id: number;
+  name: string;
+}
+
+interface Department {
+  id: number;
+  name: string;
+}
+
 interface Teacher {
   id: number;
   name: string;
   email: string;
   phone: string;
   subject: string;
-  department: string;
+  department: string; // department name
+  designation: string;
+  role: string;       // role name
   employeeId: string;
-  joinDate: string;
-  status: string;
+  // joinDate: string;
+  // status: string;
   avatar?: string;
 }
 
@@ -36,18 +48,22 @@ interface TeacherModalProps {
   onOpenChange: (open: boolean) => void;
   teacher: Teacher | null;
   onSave: (teacherData: Omit<Teacher, 'id'>) => void;
+  roles: Role[];
+  departments: Department[];
 }
 
-export const TeacherModal = ({ open, onOpenChange, teacher, onSave }: TeacherModalProps) => {
+export const TeacherModal = ({ open, onOpenChange, teacher, onSave, roles, departments }: TeacherModalProps) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     subject: '',
     department: '',
+    designation: '',
+    role: '',
     employeeId: '',
-    joinDate: new Date().toISOString().split('T')[0],
-    status: 'Active',
+    // joinDate: new Date().toISOString().split('T')[0],
+    // status: 'Active',
     avatar: ''
   });
 
@@ -59,9 +75,11 @@ export const TeacherModal = ({ open, onOpenChange, teacher, onSave }: TeacherMod
         phone: teacher.phone,
         subject: teacher.subject,
         department: teacher.department,
+        designation: teacher.designation,
+        role: teacher.role,
         employeeId: teacher.employeeId,
-        joinDate: teacher.joinDate,
-        status: teacher.status,
+        // joinDate: teacher.joinDate,
+        // status: teacher.status,
         avatar: teacher.avatar || ''
       });
     } else {
@@ -71,9 +89,11 @@ export const TeacherModal = ({ open, onOpenChange, teacher, onSave }: TeacherMod
         phone: '',
         subject: '',
         department: '',
+        designation: '',
+        role: '',
         employeeId: '',
-        joinDate: new Date().toISOString().split('T')[0],
-        status: 'Active',
+        // joinDate: new Date().toISOString().split('T')[0],
+        // status: 'Active',
         avatar: ''
       });
     }
@@ -99,101 +119,115 @@ export const TeacherModal = ({ open, onOpenChange, teacher, onSave }: TeacherMod
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name & Employee ID */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label>Full Name</Label>
               <Input
-                id="name"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 required
               />
             </div>
-            
             <div className="space-y-2">
-              <Label htmlFor="employeeId">Employee ID</Label>
+              <Label>Employee ID</Label>
               <Input
-                id="employeeId"
                 value={formData.employeeId}
                 onChange={(e) => handleInputChange('employeeId', e.target.value)}
                 required
               />
             </div>
           </div>
-          
+
+          {/* Email */}
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label>Email</Label>
             <Input
-              id="email"
               type="email"
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
               required
             />
           </div>
-          
+
+          {/* Phone */}
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label>Phone</Label>
             <Input
-              id="phone"
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
               required
             />
           </div>
-          
+
+          {/* Designation */}
+          <div className="space-y-2">
+            <Label>Designation</Label>
+            <Input
+              value={formData.designation}
+              onChange={(e) => handleInputChange('designation', e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Department & Role */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="subject">Subject</Label>
-              <Select value={formData.subject} onValueChange={(value) => handleInputChange('subject', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select subject" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Mathematics">Mathematics</SelectItem>
-                  <SelectItem value="Physics">Physics</SelectItem>
-                  <SelectItem value="Chemistry">Chemistry</SelectItem>
-                  <SelectItem value="Biology">Biology</SelectItem>
-                  <SelectItem value="English Literature">English Literature</SelectItem>
-                  <SelectItem value="History">History</SelectItem>
-                  <SelectItem value="Geography">Geography</SelectItem>
-                  <SelectItem value="Computer Science">Computer Science</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
-              <Select value={formData.department} onValueChange={(value) => handleInputChange('department', value)}>
+              <Label>Department</Label>
+              <Select
+                value={formData.department}
+                onValueChange={(value) => handleInputChange('department', value)}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select department" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Science">Science</SelectItem>
-                  <SelectItem value="Mathematics">Mathematics</SelectItem>
-                  <SelectItem value="Humanities">Humanities</SelectItem>
-                  <SelectItem value="Languages">Languages</SelectItem>
-                  <SelectItem value="Technology">Technology</SelectItem>
+                  {departments.map(dep => (
+                    <SelectItem key={dep.id} value={dep.name}>
+                      {dep.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Role</Label>
+              <Select
+                value={formData.role}
+                onValueChange={(value) => handleInputChange('role', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {roles.map(role => (
+                    <SelectItem key={role.id} value={role.name}>
+                      {role.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
-          
+
+          {/* Join Date & Status */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="joinDate">Join Date</Label>
+            {/* <div className="space-y-2">
+              <Label>Join Date</Label>
               <Input
-                id="joinDate"
                 type="date"
                 value={formData.joinDate}
                 onChange={(e) => handleInputChange('joinDate', e.target.value)}
                 required
               />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
-              <Select value={formData.status} onValueChange={(value) => handleInputChange('status', value)}>
+            </div> */}
+            {/* <div className="space-y-2">
+              <Label>Status</Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value) => handleInputChange('status', value)}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -203,16 +237,15 @@ export const TeacherModal = ({ open, onOpenChange, teacher, onSave }: TeacherMod
                   <SelectItem value="On Leave">On Leave</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
           </div>
-          
+
+          {/* Footer */}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit">
-              {teacher ? 'Update' : 'Add'} Teacher
-            </Button>
+            <Button type="submit">{teacher ? 'Update' : 'Add'} Teacher</Button>
           </DialogFooter>
         </form>
       </DialogContent>

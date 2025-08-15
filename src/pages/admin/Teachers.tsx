@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import axios from "axios";
+import { Circles } from "react-loader-spinner";
 import { Plus, Search, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,6 +26,8 @@ interface Teacher {
   phone: string;
   subject: string;
   department: string;
+  role: string;
+  designation: string;
   employeeId: string;
   joinDate: string;
   status: string;
@@ -37,6 +41,8 @@ export const AdminTeachers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
   const [loading, setLoading] = useState(true);
+  const [roles, setRoles] = useState<Role[]>([]);
+const [departments, setDepartments] = useState<Department[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -47,26 +53,44 @@ export const AdminTeachers = () => {
     const filtered = teachers.filter(teacher =>
       teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       teacher.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      teacher.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      teacher.designation.toLowerCase().includes(searchTerm.toLowerCase()) ||
       teacher.department.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredTeachers(filtered);
   }, [teachers, searchTerm]);
 
-  const fetchTeachers = async () => {
-    try {
-      const response = await teachersApi.getAll();
-      setTeachers(response.data);
-      setLoading(false);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch teachers",
-        variant: "destructive",
-      });
-      setLoading(false);
-    }
-  };
+const fetchTeachers = async () => {
+  setLoading(true);
+  try {
+    const response = await axios.get("http://127.0.0.1:8000/api/teachers");
+        setRoles(response.data.roles);
+    setDepartments(response.data.departments);
+    console.log(response.data);
+    const mappedTeachers: Teacher[] = response.data.teachers.map((item: any) => ({
+      id: item.id,
+      name: item.user?.name || '',
+      email: item.user?.email || '',
+      phone: item.user?.phone || '',
+      designation: item.designation || '', // You can change if subject is different
+      department: item.department?.name || '',
+      employeeId: item.user_id?.toString() || '',
+      joinDate: item.created_at,
+      role: item.user.role?.name || '', // or another field you want for status
+      avatar: '', // If you have avatar URL in API, map it here
+    }));
+
+    setTeachers(mappedTeachers);
+  } catch (error) {
+    toast({
+      title: "Error",
+      description: "Failed to fetch teachers",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleAddTeacher = () => {
     setEditingTeacher(null);
@@ -125,7 +149,16 @@ export const AdminTeachers = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading...</div>;
+    return <div className="flex justify-center items-center h-64">
+      <Circles
+  height="80"
+  width="80"
+  color="#4fa94d"
+  ariaLabel="circles-loading"
+  wrapperStyle={{}}
+  wrapperClass=""
+  visible={true}
+  ></Circles></div>;
   }
 
   return (
@@ -162,10 +195,11 @@ export const AdminTeachers = () => {
               <TableRow>
                 <TableHead>Teacher</TableHead>
                 <TableHead>Contact</TableHead>
-                <TableHead>Subject</TableHead>
+                {/* <TableHead>Subject</TableHead> */}
                 <TableHead>Department</TableHead>
-                <TableHead>Employee ID</TableHead>
-                <TableHead>Status</TableHead>
+                {/* <TableHead>Employee ID</TableHead> */}
+                <TableHead>Designation</TableHead>
+                <TableHead>Role</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -187,14 +221,13 @@ export const AdminTeachers = () => {
                   <TableCell>
                     <div className="text-sm">{teacher.phone}</div>
                   </TableCell>
+                  <TableCell><Badge variant='outline'>{teacher.department}</Badge></TableCell>
                   <TableCell>
-                    <Badge variant="secondary">{teacher.subject}</Badge>
+                      {teacher.designation}
                   </TableCell>
-                  <TableCell>{teacher.department}</TableCell>
-                  <TableCell className="font-mono text-sm">{teacher.employeeId}</TableCell>
                   <TableCell>
-                    <Badge variant={teacher.status === 'Active' ? 'default' : 'secondary'}>
-                      {teacher.status}
+                    <Badge variant="outline">
+                      {teacher.role}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -224,11 +257,14 @@ export const AdminTeachers = () => {
       </Card>
 
       <TeacherModal
-        open={isModalOpen}
-        onOpenChange={setIsModalOpen}
-        teacher={editingTeacher}
-        onSave={handleSaveTeacher}
-      />
+  open={isModalOpen}
+  onOpenChange={setIsModalOpen}
+  teacher={editingTeacher}
+  onSave={handleSaveTeacher}
+  roles={roles}
+  departments={departments}
+/>
+
     </div>
   );
 };
