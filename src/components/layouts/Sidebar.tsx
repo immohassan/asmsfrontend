@@ -117,7 +117,7 @@ export const Sidebar = () => {
   return (
     <div className="w-64 bg-card border-r border-border flex flex-col">
       <div className="p-6 border-b border-border">
-        <h1 className="text-xl font-bold text-primary">Akademi</h1>
+        <h1 className="text-xl font-bold text-primary">Alifya</h1>
         <p className="text-sm text-muted-foreground">School Management</p>
       </div>
       
