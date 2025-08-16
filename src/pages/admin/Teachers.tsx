@@ -25,12 +25,15 @@ interface Teacher {
   email: string;
   phone: string;
   subject: string;
-  department: string;
-  role: string;
+  department_id: number;   
+  department: string;      
+  role_id: number;        
+  role: string; 
   designation: string;
   employeeId: string;
   joinDate: string;
   status: string;
+  address: string;
   avatar?: string;
 }
 
@@ -72,11 +75,14 @@ const fetchTeachers = async () => {
       email: item.user?.email || '',
       phone: item.user?.phone || '',
       designation: item.designation || '', // You can change if subject is different
-      department: item.department?.name || '',
+      department_id: item.department?.id || 0,        
+      department: item.department?.name || '',        
+      role_id: item.user?.role?.id || 0,              
+      role: item.user?.role?.name || '', 
       employeeId: item.user_id?.toString() || '',
       joinDate: item.created_at,
-      role: item.user.role?.name || '', // or another field you want for status
       avatar: '', // If you have avatar URL in API, map it here
+      address: item.user.address, // If you have avatar URL in API, map it here
     }));
 
     setTeachers(mappedTeachers);
@@ -102,24 +108,26 @@ const fetchTeachers = async () => {
     setIsModalOpen(true);
   };
 
-  const handleDeleteTeacher = async (teacherId: number) => {
-    if (confirm('Are you sure you want to delete this teacher?')) {
-      try {
-        await teachersApi.delete(teacherId);
-        setTeachers(teachers.filter(t => t.id !== teacherId));
-        toast({
-          title: "Success",
-          description: "Teacher deleted successfully",
-        });
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to delete teacher",
-          variant: "destructive",
-        });
-      }
+const handleDeleteTeacher = async (teacherId: number) => {
+  if (confirm("Are you sure you want to delete this teacher?")) {
+    try {
+      await axios.post("http://127.0.0.1:8000/api/teachers/delete", { id: teacherId }); // ✅ sending id in body
+
+      setTeachers(teachers.filter((t) => t.id !== teacherId));
+
+      toast({
+        title: "Success",
+        description: "Teacher deleted successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete teacher",
+        variant: "destructive",
+      });
     }
-  };
+  }
+};
 
   const handleSaveTeacher = async (teacherData: Omit<Teacher, 'id'>) => {
     try {
@@ -260,9 +268,9 @@ const fetchTeachers = async () => {
   open={isModalOpen}
   onOpenChange={setIsModalOpen}
   teacher={editingTeacher}
-  onSave={handleSaveTeacher}
   roles={roles}
   departments={departments}
+  onSuccess={fetchTeachers}   // ✅ refresh list after success
 />
 
     </div>
