@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from "axios";
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -17,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { toast } from "@/components/ui/use-toast";
 
 interface Role {
   id: number;
@@ -33,78 +35,107 @@ interface Teacher {
   name: string;
   email: string;
   phone: string;
-  subject: string;
-  department: string; // department name
   designation: string;
-  role: string;       // role name
-  employeeId: string;
-  // joinDate: string;
-  // status: string;
-  avatar?: string;
+  role?: number;        // ✅ optional
+  department?: number;  // ✅ optional
+  user_id?: number;
+  address?: string;
 }
+
 
 interface TeacherModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   teacher: Teacher | null;
-  onSave: (teacherData: Omit<Teacher, 'id'>) => void;
   roles: Role[];
   departments: Department[];
+  onSuccess: () => void; // refresh table after update
 }
 
-export const TeacherModal = ({ open, onOpenChange, teacher, onSave, roles, departments }: TeacherModalProps) => {
+export const TeacherModal = ({ open, onOpenChange, teacher, roles, departments, onSuccess }: TeacherModalProps) => {
   const [formData, setFormData] = useState({
+    id: 0,
+    user_id: 0,
     name: '',
     email: '',
     phone: '',
-    subject: '',
-    department: '',
     designation: '',
-    role: '',
-    employeeId: '',
-    // joinDate: new Date().toISOString().split('T')[0],
-    // status: 'Active',
-    avatar: ''
+    role_id: 0,
+    department_id: 0,
+    address: '',
+    password: '',
   });
 
   useEffect(() => {
     if (teacher) {
+  setFormData({
+    id: teacher.id,
+    user_id: teacher.user_id || 0,
+    name: teacher.name,
+    email: teacher.email,
+    phone: teacher.phone,
+    designation: teacher.designation,
+    role_id: teacher.role_id,            
+    department_id: teacher.department_id,
+    address: teacher.address || '',
+    password: '',
+  });
+} else {
       setFormData({
-        name: teacher.name,
-        email: teacher.email,
-        phone: teacher.phone,
-        subject: teacher.subject,
-        department: teacher.department,
-        designation: teacher.designation,
-        role: teacher.role,
-        employeeId: teacher.employeeId,
-        // joinDate: teacher.joinDate,
-        // status: teacher.status,
-        avatar: teacher.avatar || ''
-      });
-    } else {
-      setFormData({
+        id: 0,
+        user_id: 0,
         name: '',
         email: '',
         phone: '',
-        subject: '',
-        department: '',
         designation: '',
-        role: '',
-        employeeId: '',
-        // joinDate: new Date().toISOString().split('T')[0],
-        // status: 'Active',
-        avatar: ''
+        role_id: 0,
+        department_id: 0,
+        address: '',
+        password: '',
       });
     }
   }, [teacher]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    try {
+      let response;
+      if (teacher) {
+        // ✅ UPDATE (use id in URL for clarity)
+        response = await axios.put(
+          `http://127.0.0.1:8000/api/teachers/update`,
+          formData,
+          { headers: { "Content-Type": "application/json" } }
+        );
+      } else {
+        // ✅ ADD
+        response = await axios.post(
+          "http://127.0.0.1:8000/api/teachers/add",
+          formData,
+          { headers: { "Content-Type": "application/json" } }
+        );
+      }
+
+      // ✅ success toast only if backend actually returned 200
+      if (response.status === 200 || response.status === 201) {
+  toast({
+    title: "Success",
+    description: response.data?.message || (teacher ? "Teacher updated successfully" : "Teacher added successfully"),
+  });
+  onOpenChange(false);
+  onSuccess();
+}
+
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Something went wrong",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -117,75 +148,46 @@ export const TeacherModal = ({ open, onOpenChange, teacher, onSave, roles, depar
             {teacher ? 'Update teacher information' : 'Fill in the details to add a new teacher'}
           </DialogDescription>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name & Employee ID */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Full Name</Label>
-              <Input
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Employee ID</Label>
-              <Input
-                value={formData.employeeId}
-                onChange={(e) => handleInputChange('employeeId', e.target.value)}
-                required
-              />
-            </div>
+          <div className="space-y-2">
+            <Label>Full Name</Label>
+            <Input value={formData.name} onChange={(e) => handleInputChange('name', e.target.value)} required />
           </div>
 
-          {/* Email */}
           <div className="space-y-2">
             <Label>Email</Label>
-            <Input
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
-              required
-            />
+            <Input type="email" value={formData.email} onChange={(e) => handleInputChange('email', e.target.value)} required />
           </div>
 
-          {/* Phone */}
           <div className="space-y-2">
             <Label>Phone</Label>
-            <Input
-              value={formData.phone}
-              onChange={(e) => handleInputChange('phone', e.target.value)}
-              required
-            />
+            <Input value={formData.phone} onChange={(e) => handleInputChange('phone', e.target.value)} required />
           </div>
 
-          {/* Designation */}
           <div className="space-y-2">
             <Label>Designation</Label>
-            <Input
-              value={formData.designation}
-              onChange={(e) => handleInputChange('designation', e.target.value)}
-              required
-            />
+            <Input value={formData.designation} onChange={(e) => handleInputChange('designation', e.target.value)} required />
           </div>
 
-          {/* Department & Role */}
+          <div className="space-y-2">
+            <Label>Address</Label>
+            <Input value={formData.address} onChange={(e) => handleInputChange('address', e.target.value)} />
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Department</Label>
               <Select
-                value={formData.department}
-                onValueChange={(value) => handleInputChange('department', value)}
+                value={formData.department_id ? String(formData.department_id) : ''}
+                onValueChange={(value) => handleInputChange('department_id', Number(value))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select department" />
                 </SelectTrigger>
                 <SelectContent>
                   {departments.map(dep => (
-                    <SelectItem key={dep.id} value={dep.name}>
-                      {dep.name}
-                    </SelectItem>
+                    <SelectItem key={dep.id} value={String(dep.id)}>{dep.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -194,57 +196,23 @@ export const TeacherModal = ({ open, onOpenChange, teacher, onSave, roles, depar
             <div className="space-y-2">
               <Label>Role</Label>
               <Select
-                value={formData.role}
-                onValueChange={(value) => handleInputChange('role', value)}
+                value={formData.role_id ? String(formData.role_id) : ''}
+                onValueChange={(value) => handleInputChange('role_id', Number(value))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
                 <SelectContent>
                   {roles.map(role => (
-                    <SelectItem key={role.id} value={role.name}>
-                      {role.name}
-                    </SelectItem>
+                    <SelectItem key={role.id} value={String(role.id)}>{role.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
 
-          {/* Join Date & Status */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* <div className="space-y-2">
-              <Label>Join Date</Label>
-              <Input
-                type="date"
-                value={formData.joinDate}
-                onChange={(e) => handleInputChange('joinDate', e.target.value)}
-                required
-              />
-            </div> */}
-            {/* <div className="space-y-2">
-              <Label>Status</Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value) => handleInputChange('status', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Active">Active</SelectItem>
-                  <SelectItem value="Inactive">Inactive</SelectItem>
-                  <SelectItem value="On Leave">On Leave</SelectItem>
-                </SelectContent>
-              </Select>
-            </div> */}
-          </div>
-
-          {/* Footer */}
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
             <Button type="submit">{teacher ? 'Update' : 'Add'} Teacher</Button>
           </DialogFooter>
         </form>
