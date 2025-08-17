@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "class_id": 1,
+    "student_id": 1,
+    "subject_id": 1,
+    "status": "Present",
+    "notes": "",
+    "date": "2024-01-15",
+    "sign_in": "08:00",
+    "sign_out": "15:30",
+    "picked_by": "Parent"
+  },
+  {
+    "id": 2,
+    "class_id": 1,
+    "student_id": 2,
+    "subject_id": 1,
+    "status": "Absent",
+    "notes": "Sick leave",
+    "date": "2024-01-15",
+    "sign_in": "",
+    "sign_out": "",
+    "picked_by": ""
+  }
+]

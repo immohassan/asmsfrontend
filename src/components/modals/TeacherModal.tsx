@@ -36,8 +36,8 @@ interface Teacher {
   email: string;
   phone: string;
   designation: string;
-  role?: number;        // ✅ optional
-  department?: number;  // ✅ optional
+  role_id?: number;        
+  department_id?: number;  
   user_id?: number;
   address?: string;
 }

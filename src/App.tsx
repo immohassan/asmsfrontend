@@ -10,6 +10,7 @@ import { StudentDashboard } from "./pages/student/Dashboard";
 import { StudentSchedule } from "./pages/student/Schedule";
 import { StudentGrades } from "./pages/student/Grades";
 import { TeacherDashboard } from "./pages/teacher/Dashboard";
+import { TeacherAttendance } from "./pages/teacher/Attendance";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,7 +46,7 @@ const App = () => (
             <Route index element={<TeacherDashboard />} />
             <Route path="schedule" element={<div>Teacher Schedule - Coming Soon</div>} />
             <Route path="grades" element={<div>Teacher Grades - Coming Soon</div>} />
-            <Route path="attendance" element={<div>Teacher Attendance - Coming Soon</div>} />
+            <Route path="attendance" element={<TeacherAttendance />} />
             <Route path="assignments" element={<div>Teacher Assignments - Coming Soon</div>} />
           </Route>
           

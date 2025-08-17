@@ -40,3 +40,16 @@ export const gradesApi = {
   update: (id: number, data: any) => Promise.resolve({ data: { ...data, id } }),
   create: (data: any) => Promise.resolve({ data: { ...data, id: Date.now() } }),
 };
+
+export const attendanceApi = {
+  getAll: () => api.get('/attendance.json'),
+  getByDate: (date: string) => api.get('/attendance.json').then(res => 
+    res.data.filter((a: any) => a.date === date)
+  ),
+  getByClassAndDate: (classId: number, date: string) => api.get('/attendance.json').then(res => 
+    res.data.filter((a: any) => a.class_id === classId && a.date === date)
+  ),
+  create: (data: any) => Promise.resolve({ data: { ...data, id: Date.now() } }),
+  createBulk: (data: any[]) => Promise.resolve({ data: data.map(item => ({ ...item, id: Date.now() + Math.random() })) }),
+  update: (id: number, data: any) => Promise.resolve({ data: { ...data, id } }),
+};

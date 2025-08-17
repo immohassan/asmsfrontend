@@ -44,8 +44,8 @@ export const AdminTeachers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
   const [loading, setLoading] = useState(true);
-  const [roles, setRoles] = useState<Role[]>([]);
-const [departments, setDepartments] = useState<Department[]>([]);
+  const [roles, setRoles] = useState<any[]>([]);
+const [departments, setDepartments] = useState<any[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
