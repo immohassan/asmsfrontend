@@ -11,6 +11,7 @@ import { StudentSchedule } from "./pages/student/Schedule";
 import { StudentGrades } from "./pages/student/Grades";
 import { TeacherDashboard } from "./pages/teacher/Dashboard";
 import { TeacherAttendance } from "./pages/teacher/Attendance";
+import { ReportGeneration } from "./pages/teacher/ReportGeneration";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="schedule" element={<div>Teacher Schedule - Coming Soon</div>} />
             <Route path="grades" element={<div>Teacher Grades - Coming Soon</div>} />
             <Route path="attendance" element={<TeacherAttendance />} />
+            <Route path="reports" element={<ReportGeneration />} />
             <Route path="assignments" element={<div>Teacher Assignments - Coming Soon</div>} />
           </Route>
           

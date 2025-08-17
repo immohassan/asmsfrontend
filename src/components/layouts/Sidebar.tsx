@@ -93,8 +93,13 @@ const teacherMenuItems = [
     href: '/teacher/attendance'
   },
   {
-    title: 'Assignments',
+    title: 'Report Generation',
     icon: FileText,
+    href: '/teacher/reports'
+  },
+  {
+    title: 'Assignments',
+    icon: MessageSquare,
     href: '/teacher/assignments'
   }
 ];
